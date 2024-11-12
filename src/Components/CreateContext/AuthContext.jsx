@@ -35,7 +35,6 @@ export const AuthProvider = ({ children }) => {
     sessionStorage.setItem('userData', JSON.stringify(userData));
     alert('Signup successful! Please log in.');
     setIsLogin(true);
-    navigate('/dashboard');
   };
 
   const handleLoginSubmit = (event) => {
@@ -47,6 +46,7 @@ export const AuthProvider = ({ children }) => {
     if (storedUserData?.email === email && storedUserData?.password === password) {
       alert('Login successful');
       setLoggedin(true);
+      navigate('/dashboard');
     } else {
       alert('Invalid email or password');
     }
