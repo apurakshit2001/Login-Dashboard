@@ -120,8 +120,10 @@ form {
     font-size: 18px;
     color: #000000;
     position: absolute;
-    right: 10px;
-    margin-top: 12px;
+    right: 0;
+    background: linear-gradient(to right,#ffffff,  rgb(190, 161, 123));
+    padding: 13px;
+    border-radius: 0 5px 5px 0;
 }
 
 input[type='radio'] {
