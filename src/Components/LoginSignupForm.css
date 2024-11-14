@@ -121,7 +121,7 @@ form {
     color: #000000;
     position: absolute;
     right: 0;
-    background: linear-gradient(to right,#ffffff,  rgb(190, 161, 123));
+    background: linear-gradient(to right,#ffffff,  rgb(66, 64, 64));
     padding: 13px;
     border-radius: 0 5px 5px 0;
 }
