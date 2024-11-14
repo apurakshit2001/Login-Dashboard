@@ -1,18 +1,43 @@
 import React, { useContext } from 'react';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import './LoginSignupForm.css';
 import { AuthContext } from './CreateContext/AuthContext';
 
 const LoginSignupForm = () => {
   const {
     isLogin,
-    emailRef,
-    passwordRef,
-    confirmPasswordRef,
     handleLoginClick,
     handleSignupClick,
     handleLoginSubmit,
     handleSignupSubmit
   } = useContext(AuthContext);
+
+  const validationSchema = Yup.object({
+    email: Yup.string().email('Invalid email format').required('Required'),
+    password: Yup.string().min(6, 'Password should be at least 6 characters').required('Required'),
+    confirmPassword: !isLogin
+      ? Yup.string()
+        .oneOf([Yup.ref('password'), null], 'Passwords must match')
+        .required('Required')
+      : null,
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
+    validationSchema,
+    onSubmit: values => {
+      if (isLogin) {
+        handleLoginSubmit(values);
+      } else {
+        handleSignupSubmit(values);
+      }
+    },
+  });
 
   return (
     <div className="loginContainer">
@@ -31,46 +56,61 @@ const LoginSignupForm = () => {
             <div className="slider-tab"></div>
           </div>
           <div className="form-inner">
-            {isLogin ? (
-              <form className="login" onSubmit={handleLoginSubmit}>
-                <div className="field">
-                  <i className="bx bxs-user"></i>
-                  <input type="text" placeholder="Email Address" required ref={emailRef} />
+            <form onSubmit={formik.handleSubmit}>
+              <div className="field">
+                <i className="bx bxs-user"></i>
+                <div className="fieldChild">
+                  <input
+                    type="text"
+                    name="email"
+                    placeholder="Email Address"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.email}
+                  />
+                  {formik.touched.email && formik.errors.email && (
+                    <div className="error">{formik.errors.email}</div>
+                  )}
                 </div>
+              </div>
+              <div className="field">
+                <i className="bx bxs-lock-alt"></i>
+                <div className="fieldChild">
+                  <input
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.password}
+                  />
+                  {formik.touched.password && formik.errors.password && (
+                    <div className="error">{formik.errors.password}</div>
+                  )}
+                </div>
+              </div>
+              {!isLogin && (
                 <div className="field">
                   <i className="bx bxs-lock-alt"></i>
-                  <input type="password" placeholder="Password" required ref={passwordRef} />
+                  <div className="fieldChild">
+                    <input
+                      type="password"
+                      name="confirmPassword"
+                      placeholder="Confirm password"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.confirmPassword}
+                    />
+                    {formik.touched.confirmPassword && formik.errors.confirmPassword && (
+                      <div className="error">{formik.errors.confirmPassword}</div>
+                    )}
+                  </div>
                 </div>
-                <div className="field btn">
-                  <input type="submit" value="Login" />
-                </div>
-                <div className="pass-link">
-                  <a href="#">Forgot password?</a>
-                </div>
-                <div className="signup-link">
-                  Not a member? <a href="#" onClick={handleSignupClick}>Signup now</a>
-                </div>
-              </form>
-            ) : (
-              <form className="signup" onSubmit={handleSignupSubmit}>
-                <div className="field">
-                  <i className="bx bxs-envelope"></i>
-                  <input type="text" placeholder="Email Address" required ref={emailRef} />
-                </div>
-                <div className="field">
-                  <i className="bx bxs-lock-alt"></i>
-                  <input type="password" placeholder="Password" required ref={passwordRef} />
-                </div>
-                <div className="field">
-                  <i className="bx bxs-lock-alt"></i>
-                  <input type="password" placeholder="Confirm password" required ref={confirmPasswordRef} />
-                </div>
-                <div className="field btn">
-                  <div className="btn-layer"></div>
-                  <input type="submit" value="Signup" />
-                </div>
-              </form>
-            )}
+              )}
+              <div className="field btn">
+                <input type="submit" value={isLogin ? "Login" : "Signup"} />
+              </div>
+            </form>
           </div>
         </div>
       </div>

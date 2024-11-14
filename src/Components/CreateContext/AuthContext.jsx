@@ -1,14 +1,11 @@
 // AuthContext.jsx
-import React, { createContext, useState, useRef } from 'react';
+import React, { createContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [isLogin, setIsLogin] = useState(false);
-    const emailRef = useRef(null);
-    const passwordRef = useRef(null);
-    const confirmPasswordRef = useRef(null);
     const [loggedin, setLoggedin] = useState(
         JSON.parse(sessionStorage.getItem('loggedin')) || false
     );
@@ -22,11 +19,8 @@ export const AuthProvider = ({ children }) => {
         setIsLogin(false);
     };
 
-    const handleSignupSubmit = (event) => {
-        event.preventDefault();
-        const email = emailRef.current.value;
-        const password = passwordRef.current.value;
-        const confirmPassword = confirmPasswordRef.current.value;
+    const handleSignupSubmit = (values) => {
+        const { email, password, confirmPassword } = values;
 
         if (password !== confirmPassword) {
             alert('Passwords do not match');
@@ -39,10 +33,8 @@ export const AuthProvider = ({ children }) => {
         setIsLogin(true);
     };
 
-    const handleLoginSubmit = (event) => {
-        event.preventDefault();
-        const email = emailRef.current.value;
-        const password = passwordRef.current.value;
+    const handleLoginSubmit = (values) => {
+        const { email, password } = values;
 
         const storedUserData = JSON.parse(sessionStorage.getItem('userData'));
         if (storedUserData?.email === email && storedUserData?.password === password) {
@@ -58,9 +50,6 @@ export const AuthProvider = ({ children }) => {
     return (
         <AuthContext.Provider value={{
             isLogin,
-            emailRef,
-            passwordRef,
-            confirmPasswordRef,
             loggedin,
             setLoggedin,
             handleLoginClick,
